@@ -2,15 +2,19 @@ language: julia
 matrix:
   include:
     - os: linux
+      addons:
+        apt_packages:
+          - gfortran
+      julia:
+        - 0.4
+        - release
+        - nightly
     - os: osx
       osx_image: xcode7.3
-julia:
-  - 0.4
-  - release
-  - nightly
-addons:
-  apt_packages:
-    - gfortran
+      julia:
+        - 0.4
+        - release
+        - nightly
 script:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     wget --no-check-certificate http://www.cmake.org/files/v3.3/cmake-3.3.2-Darwin-x86_64.tar.gz;
