@@ -16,9 +16,7 @@ matrix:
 addons:
   apt_packages:
     - gfortran
-branches:
-  only:
-    - master
+
 script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     wget --no-check-certificate http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz;
@@ -29,6 +27,6 @@ script:
   - cmake --version
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'using Pkg; Pkg.clone(pwd())'
-  - julia --check-bounds=yes -e 'using Pkg; Pkg.build("AmplNLReader"); Pkg.test("AmplNLReader"; coverage=true)'
+  - julia --check-bounds=yes -e 'using Pkg; Pkg.clone("https://github.com/abelsiqueira/FastClosures.jl"); Pkg.add(PackageSpec(url="https://github.com/abelsiqueira/NLPModels.jl", rev="julia-0.7")); Pkg.build("AmplNLReader"); Pkg.test("AmplNLReader"; coverage=true)'
 after_success:
   - julia -e 'using Pkg; cd(Pkg.dir("AmplNLReader")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
