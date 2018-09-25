@@ -304,7 +304,7 @@ function jac_coord(nlp :: AmplModel, x :: Vector{Float64})
   @check_ampl_model
   length(x) >= nlp.meta.nvar || error("x must have length at least $(nlp.meta.nvar)")
 
-  nnzj = Int(@asl_call(:asl_nnzj, Int32, (Ptr{Nothing},), asl))
+  nnzj = Int(@asl_call(:asl_nnzj, Int32, (Ptr{Nothing},), nlp.__asl))
   err = Cint(0)
   rows = Vector{Cint}(undef, nnzj)
   cols = Vector{Cint}(undef, nnzj)
