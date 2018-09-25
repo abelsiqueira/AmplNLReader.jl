@@ -323,6 +323,7 @@ end
 function jac(nlp :: AmplModel, x :: Vector{Float64})
   @check_ampl_model
   (rows, cols, vals) = jac_coord(nlp, x)
+  println("rows = $rows, cols = $cols, vals = $vals")
   return sparse(rows, cols, vals, nlp.meta.ncon, nlp.meta.nvar)
 end
 
