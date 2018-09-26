@@ -14,5 +14,5 @@ for problem in problems
   nlps = [nlp_ampl, nlp_autodiff]
 
   @printf("Checking problem %-15s%12s\t", problem_s, "")
-  consistent_nlps(nlps)
+  consistent_nlps(nlps, nloops=1000)
 end

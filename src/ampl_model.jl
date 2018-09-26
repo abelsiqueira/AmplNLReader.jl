@@ -309,9 +309,15 @@ function jac_coord(nlp :: AmplModel, x :: Vector{Float64})
   rows = Vector{Cint}(undef, nnzj)
   cols = Vector{Cint}(undef, nnzj)
   vals = Vector{Float64}(undef, nnzj)
-  @asl_call(:asl_jac, Nothing,
-            (Ptr{Nothing}, Ptr{Float64}, Ptr{Cint}, Ptr{Cint}, Ptr{Float64}, Ref{Cint}),
-             nlp.__asl,    x,            rows,      cols,      vals,         err)
+  while !all(0 .≤ rows .< nlp.meta.ncon) || !all(0 .≤ cols .< nlp.meta.nvar)
+    @asl_call(:asl_jac, Nothing,
+              (Ptr{Nothing}, Ptr{Float64}, Ptr{Cint}, Ptr{Cint}, Ptr{Float64}, Ref{Cint}),
+               nlp.__asl,    x,            rows,      cols,      vals,         err)
+    if !all(0 .≤ rows .< nlp.meta.ncon) || !all(0 .≤ cols .< nlp.meta.nvar)
+      println("rows = $rows, cols = $cols")
+      println("HAPPENED")
+    end
+  end
   nlp.counters.neval_jac += 1
   err == 0 || throw(AmplException("Error while evaluating constraints Jacobian"))
   # Use 1-based indexing.
