@@ -113,7 +113,6 @@ import NLPModels.jprod, NLPModels.jtprod, NLPModels.jprod!, NLPModels.jtprod!
 import NLPModels.jth_hprod, NLPModels.jth_hprod!
 import NLPModels.ghjvprod, NLPModels.ghjvprod!
 import NLPModels.hess_coord, NLPModels.hess, NLPModels.hprod, NLPModels.hprod!
-import NLPModels.NLPtoMPB
 
 # Methods associated to AmplModel instances.
 
@@ -279,6 +278,7 @@ end
 
 "Evaluate the `j`-th constraint sparse gradient at `x`."
 function jth_sparse_congrad(nlp :: AmplModel, x :: Vector{Float64}, j :: Int)
+  println("j = 0, ncon = $(nlp.meta.ncon)")
   @check_ampl_model
   (1 <= j <= nlp.meta.ncon)  || error("expected 0 ≤ j ≤ $(nlp.meta.ncon)")
   length(x) >= nlp.meta.nvar || error("x must have length at least $(nlp.meta.nvar)")
@@ -313,6 +313,9 @@ function jac_coord(nlp :: AmplModel, x :: Vector{Float64})
     @asl_call(:asl_jac, Nothing,
               (Ptr{Nothing}, Ptr{Float64}, Ptr{Cint}, Ptr{Cint}, Ptr{Float64}, Ref{Cint}),
                nlp.__asl,    x,            rows,      cols,      vals,         err)
+    println("rows = $rows")
+    println("cols = $cols")
+    println("vals = $vals")
     if !all(0 .≤ rows .< nlp.meta.ncon) || !all(0 .≤ cols .< nlp.meta.nvar)
       println("rows = $rows, cols = $cols")
       println("HAPPENED")
